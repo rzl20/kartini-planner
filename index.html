@@ -417,7 +417,7 @@
                                 <i class="fas fa-cloud"></i> Sinkronisasi Multi-Device (Penyimpanan Awan)
                             </h4>
                             <p class="text-xs text-gray-500 mb-4 leading-relaxed">
-                                Aktifkan fitur ini untuk menyimpan data secara online sehingga jadwal kalender, unit klinik, dan data tim dapat diakses secara real-time dari device lain (smartphone, PC rekan kerja, dll).
+                                Fitur sinkronisasi awan aktif menggunakan konfigurasi Firebase bawaan yang tertanam permanen. Semua data akan otomatis ter-update secara real-time antar perangkat.
                             </p>
                             
                             <div id="cloud-status-badge" class="mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
@@ -426,19 +426,18 @@
 
                             <div class="space-y-4 bg-gray-50 dark:bg-dark-bg p-4 rounded-xl border border-gray-100 dark:border-dark-border">
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Konfigurasi Firebase (JSON)</label>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Konfigurasi Firebase Aktif (JSON)</label>
                                     <textarea id="s-firebase-config" rows="4" placeholder='Paste konfigurasi Firebase Web App Anda di sini...' class="w-full px-3 py-2 rounded-lg bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 text-xs font-mono"></textarea>
                                     <p class="text-[10px] text-gray-400 mt-1">
-                                        Format: <code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">{"apiKey": "...", "authDomain": "...", "projectId": "..."}</code>. 
-                                        Dapatkan objek ini dari Firebase Console -> Project Settings -> General Anda.
+                                        Anda dapat menimpa dengan konfigurasi Firebase kustom jika diinginkan. Biarkan kosong untuk tetap menggunakan database bawaan RS Kartini.
                                     </p>
                                 </div>
                                 <div class="flex gap-2">
                                     <button type="button" onclick="app.saveCloudConfig()" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-1.5 px-4 rounded-lg text-xs transition-colors shadow-sm">
-                                        Hubungkan Cloud
+                                        Ganti Config Kustom
                                     </button>
                                     <button type="button" onclick="app.disconnectCloud()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-medium py-1.5 px-4 rounded-lg text-xs transition-colors">
-                                        Putuskan Koneksi
+                                        Reset ke Bawaan
                                     </button>
                                 </div>
                             </div>
@@ -803,6 +802,17 @@
         let firebaseApp, db, auth;
         let isFirebaseActive = false;
 
+        // KONFIGURASI FIREBASE BAWAAN RS KARTINI (Hardcoded Permanen untuk Semua Device)
+        const defaultFirebaseConfig = {
+            apiKey: "AIzaSyD9kA__bn0bl1h4LrumoI8E0TH0RygwxGs",
+            authDomain: "kartini-1febe.firebaseapp.com",
+            projectId: "kartini-1febe",
+            storageBucket: "kartini-1febe.firebasestorage.app",
+            messagingSenderId: "529624638173",
+            appId: "1:529624638173:web:e7e2c2faf194e084b0b134",
+            measurementId: "G-G7XR2T2BPK"
+        };
+
         const app = {
             isAdmin: false,
             currentUser: null,
@@ -860,14 +870,13 @@
 
             // 2. Inisialisasi Firebase Database Awan
             initFirebaseCloud: async function() {
-                // Cari konfigurasi dari sandbox environment atau inputan kustom settings
-                let selectedConfig = null;
+                // Gunakan konfigurasi default permanen
+                let selectedConfig = defaultFirebaseConfig;
                 
+                // Beri opsi timpa kustom config jika ada kustom config di LocalStorage atau Env
                 if (typeof __firebase_config !== 'undefined' && __firebase_config) {
                     try { selectedConfig = JSON.parse(__firebase_config); } catch(e){}
-                }
-
-                if (!selectedConfig) {
+                } else {
                     const savedCustomConfig = localStorage.getItem('kartini_custom_firebase_config');
                     if (savedCustomConfig) {
                         try { selectedConfig = JSON.parse(savedCustomConfig); } catch(e){}
@@ -901,7 +910,6 @@
                     console.error("Gagal menghubungkan ke Cloud Database:", error);
                     this.updateCloudStatusUI(false);
                     
-                    // Deteksi spesifik eror autentikasi anonim belum diaktifkan (Sangat sering terjadi!)
                     let errorMsg = "Gagal menghubungkan ke database awan.";
                     if (error.code === 'auth/operation-not-allowed') {
                         errorMsg = "<strong>Autentikasi Anonim Belum Diaktifkan!</strong><br><br>" +
@@ -933,8 +941,8 @@
                     badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Terhubung (Cloud Sync Aktif)`;
                     
                     const savedCustomConfig = localStorage.getItem('kartini_custom_firebase_config');
-                    if(savedCustomConfig && configTextarea) {
-                        configTextarea.value = savedCustomConfig;
+                    if (configTextarea) {
+                        configTextarea.value = savedCustomConfig ? savedCustomConfig : JSON.stringify(defaultFirebaseConfig, null, 2);
                     }
                 } else {
                     badge.className = "mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
@@ -1016,13 +1024,12 @@
                 }
 
                 try {
-                    // Validasi kecocokan format JSON
                     const parsed = JSON.parse(configInput);
                     if (!parsed.apiKey || !parsed.projectId) {
                         throw new Error("Kunci konfigurasi tidak lengkap.");
                     }
                     localStorage.setItem('kartini_custom_firebase_config', JSON.stringify(parsed));
-                    this.showToast('Konfigurasi disimpan. Menghubungkan cloud...', 'info');
+                    this.showToast('Konfigurasi kustom disimpan. Menghubungkan cloud...', 'info');
                     setTimeout(() => {
                         window.location.reload();
                     }, 1000);
@@ -1033,17 +1040,17 @@
 
             disconnectCloud: function() {
                 Swal.fire({
-                    title: 'Putuskan Cloud?',
-                    text: "Aplikasi akan kembali ke mode penyimpanan lokal offline.",
+                    title: 'Kembali ke Config Bawaan?',
+                    text: "Aplikasi akan di-reset untuk menggunakan database Firebase default RS Kartini.",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
+                    confirmButtonColor: '#3B82F6',
                     cancelButtonColor: '#9ca3af',
-                    confirmButtonText: 'Ya, Putuskan!'
+                    confirmButtonText: 'Ya, Reset!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         localStorage.removeItem('kartini_custom_firebase_config');
-                        this.showToast('Cloud terputus. Memuat ulang...', 'info');
+                        this.showToast('Kembali ke setelan bawaan. Memuat ulang...', 'info');
                         setTimeout(() => {
                             window.location.reload();
                         }, 1000);
@@ -1418,7 +1425,7 @@
                 if(item.type === 'carousel' && item.slides) typeText += ` (${item.slides} Slide)`;
                 document.getElementById('d-type').innerText = typeText.charAt(0).toUpperCase() + typeText.slice(1);
 
-                document.getElementById('d-status').className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs md:text-sm font-bold ${statusInfo.color} border ${statusInfo.border}`;
+                document.getElementById('d-status').className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs md:text-sm font-medium ${statusInfo.color} border ${statusInfo.border}`;
                 document.getElementById('d-status').innerText = statusInfo.label;
                 
                 document.getElementById('d-created-by').innerHTML = `<i class="fas fa-user-edit text-gray-400 mr-1"></i> ${creator ? creator.name : 'Sistem'}`;
