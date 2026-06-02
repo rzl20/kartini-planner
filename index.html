@@ -900,6 +900,26 @@
                 } catch (error) {
                     console.error("Gagal menghubungkan ke Cloud Database:", error);
                     this.updateCloudStatusUI(false);
+                    
+                    // Deteksi spesifik eror autentikasi anonim belum diaktifkan (Sangat sering terjadi!)
+                    let errorMsg = "Gagal menghubungkan ke database awan.";
+                    if (error.code === 'auth/operation-not-allowed') {
+                        errorMsg = "<strong>Autentikasi Anonim Belum Diaktifkan!</strong><br><br>" +
+                                   "Silakan masuk ke <strong>Firebase Console</strong> Anda, pilih menu " +
+                                   "<strong>Authentication</strong> -> <strong>Sign-in method</strong> -> aktifkan <strong>Anonymous</strong> agar device Anda dan tim dapat saling terhubung.";
+                    } else if (error.code === 'auth/invalid-api-key') {
+                        errorMsg = "<strong>API Key Tidak Valid!</strong><br><br>" +
+                                   "Periksa kembali kunci 'apiKey' pada konfigurasi JSON yang Anda masukkan.";
+                    } else {
+                        errorMsg += `<br><small class="text-gray-500">${error.message}</small>`;
+                    }
+
+                    Swal.fire({
+                        title: 'Koneksi Cloud Tertolak',
+                        html: errorMsg,
+                        icon: 'error',
+                        confirmButtonText: 'Saya Mengerti'
+                    });
                 }
             },
 
@@ -949,6 +969,9 @@
                                 
                                 this.refreshData();
                             }
+                        } else {
+                            // Mencegah layar kosong saat database awan baru dihubungkan (Auto-seeding data lokal saat ini)
+                            this.saveData(colName, this.data[colName]);
                         }
                     }, (error) => {
                         console.error(`Gagal melakukan singkronisasi real-time ${colName}:`, error);
