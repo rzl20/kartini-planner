@@ -124,7 +124,7 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-dark-bg dark:text-gray-200 transition-colors duration-300 overflow-hidden">
+<body class="bg-gray-50 text-gray-800 dark:bg-dark-bg dark:text-gray-200 transition-colors duration-300 overflow-hidden h-[100dvh]">
 
     <div class="flex h-screen w-full">
         <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-white dark:bg-dark-card border-r border-gray-200 dark:border-dark-border z-20 shadow-sm transition-all duration-300">
@@ -182,8 +182,8 @@
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col h-screen overflow-hidden relative w-full">
-            <header class="glass z-10 px-4 md:px-8 py-3 flex items-center justify-between sticky top-0">
+        <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden relative w-full">
+            <header class="glass z-30 px-4 md:px-8 py-3 flex items-center justify-between sticky top-0 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-primary-100 text-primary-600 flex items-center justify-center md:hidden">
                         <i class="fas fa-hospital"></i>
@@ -217,12 +217,12 @@
             <div id="views-container" class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative">
                 
                 <!-- View Calendar -->
-                <div id="view-calendar" class="view-section h-full fade-in block">
-                    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-4 h-full flex flex-col">
-                        <div id="calendar-container" class="flex-1"></div>
+                <div id="view-calendar" class="view-section h-auto md:h-full fade-in block">
+                    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-4 h-auto md:h-full flex flex-col">
+                        <div id="calendar-container" class="flex-1 min-h-[350px] md:min-h-0"></div>
                     </div>
                 </div>
-
+                
                 <!-- View Dashboard -->
                 <div id="view-dashboard" class="view-section hidden fade-in space-y-6">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -1298,6 +1298,7 @@
                 });
             },
 
+           
             initCalendar: function() {
                 const calendarEl = document.getElementById('calendar-container');
                 if(!calendarEl) return;
@@ -1311,15 +1312,17 @@
                     initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
                     headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
                     buttonText: { today: 'Hari Ini', month: 'Bulan', week: 'Minggu', list: 'Agenda' },
-                    height: '100%',
+                    height: window.innerWidth < 768 ? 'auto' : '100%',
                     events: this.getCalendarEvents(),
                     eventClick: (info) => { this.viewContentDetail(info.event.id); },
                     // Deteksi rotasi/resize layar HP ke Desktop secara real-time
                     windowResize: function(arg) {
                         if (window.innerWidth < 768) {
                             app.calendar.changeView('listWeek');
+                            app.calendar.setOption('height', 'auto');
                         } else {
                             app.calendar.changeView('dayGridMonth');
+                            app.calendar.setOption('height', '100%');
                         }
                     },
                     eventContent: function(arg) {
