@@ -282,7 +282,7 @@
                     <div class="bg-white dark:bg-dark-card p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold">Aktivitas Terbaru</h3>
-                            <button onclick="app.fetchDataFromGAS(true)" title="Sinkronkan dengan Server" class="text-gray-400 hover:text-primary-500 transition-colors"><i class="fas fa-sync-alt"></i></button>
+                            <button onclick="app.fetchData(true)" title="Sinkronkan dengan Server" class="text-gray-400 hover:text-primary-500 transition-colors"><i class="fas fa-sync-alt"></i></button>
                         </div>
                         <div id="activity-log-container" class="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
                         </div>
@@ -439,7 +439,7 @@
                                         <input type="password" id="u-password" required placeholder="***" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 text-sm">
                                     </div>
                                 </div>
-                                <button type="button" onclick="app.saveUser()" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-xl transition-colors mt-2">Buat Akun</button>
+                                <button type="button" onclick="app.saveUser()" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 rounded-xl transition-colors mt-2">Buat Akun</button>
                             </form>
                         </div>
                         <div class="w-full md:w-2/3 bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
@@ -453,27 +453,53 @@
                 </div>
 
                 <div id="view-settings" class="view-section hidden fade-in">
-                    <div class="max-w-2xl mx-auto bg-white dark:bg-dark-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border">
-                        <h3 class="font-bold mb-6 text-xl">Pengaturan Aplikasi</h3>
-                        <form id="settings-form" class="space-y-6">
-                            <div class="flex flex-col sm:flex-row items-center gap-6">
-                                <div id="setting-logo-preview" class="w-20 h-20 shrink-0 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-3xl text-gray-400 border border-gray-200 dark:border-dark-border overflow-hidden">
-                                    <i class="fas fa-hospital"></i>
+                    <div class="max-w-2xl mx-auto bg-white dark:bg-dark-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border space-y-6">
+                        <div>
+                            <h3 class="font-bold mb-6 text-xl">Pengaturan Aplikasi</h3>
+                            <form id="settings-form" class="space-y-6">
+                                <div class="flex flex-col sm:flex-row items-center gap-6">
+                                    <div id="setting-logo-preview" class="w-20 h-20 shrink-0 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-3xl text-gray-400 border border-gray-200 dark:border-dark-border overflow-hidden">
+                                        <i class="fas fa-hospital"></i>
+                                    </div>
+                                    <div class="flex-1 w-full">
+                                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Link URL Logo Rumah Sakit</label>
+                                        <input type="url" id="s-logo" placeholder="https://contoh.com/logo.png" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 text-sm">
+                                        <p class="text-[10px] text-gray-400 mt-1">Masukkan Link/URL gambar logo (PNG/JPG). Biarkan kosong untuk menggunakan ikon bawaan aplikasi.</p>
+                                    </div>
                                 </div>
-                                <div class="flex-1 w-full">
-                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Link URL Logo Rumah Sakit</label>
-                                    <input type="url" id="s-logo" placeholder="https://contoh.com/logo.png" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 text-sm">
-                                    <p class="text-[10px] text-gray-400 mt-1">Masukkan Link/URL gambar logo (PNG/JPG). Biarkan kosong untuk menggunakan ikon bawaan aplikasi.</p>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Nama Organisasi / Rumah Sakit</label>
+                                    <input type="text" id="s-name" placeholder="Nama Aplikasi" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 font-medium font-medium">
+                                </div>
+                                <div class="border-t border-gray-100 dark:border-dark-border pt-6">
+                                    <button type="button" onclick="app.saveSettings()" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-8 rounded-xl transition-colors shadow-md shadow-primary-500/20">Simpan Pengaturan</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Section: Sinkronisasi Multi-Device / Cloud Storage -->
+                        <div class="border-t border-gray-100 dark:border-dark-border pt-6">
+                            <h4 class="font-bold mb-2 text-sm md:text-base flex items-center gap-2 text-primary-600">
+                                <i class="fas fa-cloud"></i> Sinkronisasi Multi-Device (Penyimpanan Awan)
+                            </h4>
+                            <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+                                Fitur sinkronisasi awan aktif menggunakan konfigurasi Firebase bawaan yang tertanam permanen. Semua data Anda akan otomatis ter-update secara real-time antar perangkat.
+                            </p>
+                            
+                            <div id="cloud-status-badge" class="mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                                <span class="w-2 h-2 rounded-full bg-gray-400"></span> Memeriksa Koneksi Cloud...
+                            </div>
+
+                            <div class="space-y-4 bg-gray-50 dark:bg-dark-bg p-4 rounded-xl border border-gray-100 dark:border-dark-border">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Konfigurasi Firebase Aktif (JSON)</label>
+                                    <textarea id="s-firebase-config" readonly rows="7" class="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-dark-card border border-gray-200 dark:border-dark-border outline-none text-xs font-mono"></textarea>
+                                    <p class="text-[10px] text-gray-400 mt-1">
+                                        Konfigurasi Firebase proyek <code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">kartini-1febe</code> telah ditanam secara permanen. Pengguna tidak perlu mengatur apa pun lagi.
+                                    </p>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Nama Organisasi / Rumah Sakit</label>
-                                <input type="text" id="s-name" placeholder="Nama Aplikasi" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 font-medium">
-                            </div>
-                            <div class="border-t border-gray-100 dark:border-dark-border pt-6">
-                                <button type="button" onclick="app.saveSettings()" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-8 rounded-xl transition-colors shadow-md shadow-primary-500/20">Simpan Pengaturan</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -823,7 +849,28 @@
         </div>
     </div>
 
-    <script>
+    <!-- Firebase SDK Modules Integration (RULE 3 - Auth Before Queries) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // APP CONFIGURATIONS
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let firebaseApp, db, auth;
+        let isFirebaseActive = false;
+
+        // KONFIGURASI FIREBASE BAWAAN RS KARTINI (Tertanam Permanen untuk Semua Perangkat)
+        const defaultFirebaseConfig = {
+            apiKey: "AIzaSyD9kA__bn0bl1h4LrumoI8E0TH0RygwxGs",
+            authDomain: "kartini-1febe.firebaseapp.com",
+            projectId: "kartini-1febe",
+            storageBucket: "kartini-1febe.firebasestorage.app",
+            messagingSenderId: "529624638173",
+            appId: "1:529624638173:web:e7e2c2faf194e084b0b134",
+            measurementId: "G-G7XR2T2BPK"
+        };
+
         const app = {
             isAdmin: false,
             currentUser: null,
@@ -842,7 +889,10 @@
                 pillars: ['Edukasi', 'Promo', 'Event', 'Kesehatan', 'Testimoni', 'Branding', 'Awareness', 'Informasi Dokter'],
                 ideas: [],
                 activities: [],
-                clinics: [],
+                clinics: [
+                    {id: 'cl1', name: 'Klinik Umum', color: '#3B82F6', bg: 'bg-blue-100', text: 'text-blue-800'},
+                    {id: 'cl2', name: 'Klinik Gigi', color: '#10B981', bg: 'bg-emerald-100', text: 'text-emerald-800'}
+                ],
                 team: [],
                 users: [ // Admin Default
                     { id: 'u1', name: 'Admin Utama', role: 'Super Admin', username: 'admin', password: 'admin' }
@@ -858,56 +908,148 @@
                 contents: []
             },
 
-            init: function() {
-                this.fetchDataFromGAS();
+            init: async function() {
+                this.loadLocalData();
+                this.renderAll();
+                await this.initFirebaseCloud();
             },
 
-            fetchDataFromGAS: function(isManualSync = false) {
-                if(isManualSync) {
-                    try { this.showToast('Menyinkronkan data dengan server...', 'info'); } catch(e){}
+            // Memuat cadangan data lokal terlebih dahulu untuk kecepatan render instan
+            loadLocalData: function() {
+                Object.keys(this.data).forEach(key => {
+                    const localData = localStorage.getItem('kartini_planner_' + key);
+                    if (localData) {
+                        try {
+                            this.data[key] = JSON.parse(localData);
+                        } catch(e) { console.error("Error parsing local data", e); }
+                    }
+                });
+            },
+
+            // Inisialisasi Firebase Database Awan
+            initFirebaseCloud: async function() {
+                // Selalu gunakan konfigurasi default permanen
+                const selectedConfig = defaultFirebaseConfig;
+
+                try {
+                    firebaseApp = initializeApp(selectedConfig);
+                    auth = getAuth(firebaseApp);
+                    db = getFirestore(firebaseApp);
+
+                    // Jalankan Auth terlebih dahulu sebelum query (RULE 3)
+                    const authResult = await signInAnonymously(auth);
+
+                    if (authResult && authResult.user) {
+                        isFirebaseActive = true;
+                        this.updateCloudStatusUI(true);
+                        this.setupFirebaseListeners();
+                    }
+                } catch (error) {
+                    console.error("Gagal menghubungkan ke Cloud Database:", error);
+                    this.updateCloudStatusUI(false);
+                    
+                    let errorMsg = "Gagal menghubungkan ke database awan.";
+                    if (error.code === 'auth/operation-not-allowed') {
+                        errorMsg = "<strong>Autentikasi Anonim Belum Diaktifkan!</strong><br><br>" +
+                                   "Silakan masuk ke <strong>Firebase Console</strong> Anda, pilih menu " +
+                                   "<strong>Authentication</strong> -> <strong>Sign-in method</strong> -> aktifkan <strong>Anonymous</strong> agar device Anda dan tim dapat saling terhubung.";
+                    } else if (error.code === 'auth/invalid-api-key') {
+                        errorMsg = "<strong>API Key Tidak Valid!</strong><br><br>" +
+                                   "Periksa kembali kunci 'apiKey' pada konfigurasi bawaan Anda.";
+                    } else {
+                        errorMsg += `<br><small class="text-gray-500">${error.message}</small>`;
+                    }
+
+                    Swal.fire({
+                        title: 'Koneksi Cloud Gagal',
+                        html: errorMsg,
+                        icon: 'error',
+                        confirmButtonText: 'Saya Mengerti'
+                    });
                 }
-                
-                if (typeof google !== 'undefined' && google.script && google.script.run) {
-                    google.script.run
-                        .withSuccessHandler((response) => {
-                            if (response) {
-                                Object.keys(this.data).forEach(key => {
-                                    if (response[key] !== undefined && response[key] !== null) {
-                                        // Pastikan tipe data array tidak tertimpa object/string dari GAS
-                                        if (Array.isArray(this.data[key]) && !Array.isArray(response[key])) return;
-                                        this.data[key] = response[key];
-                                    }
-                                });
-                            }
-                            if(!isManualSync) {
-                                this.renderAll();
-                            } else {
-                                this.refreshData();
-                                try { this.showToast('Data berhasil disinkronkan', 'success'); } catch(e){}
-                            }
-                        })
-                        .withFailureHandler((err) => {
-                            console.error("GAS Fetch Error:", err);
-                            try { this.showToast('Gagal memuat data dari server', 'error'); } catch(e){}
-                            if(!isManualSync) this.renderAll();
-                        })
-                        .getInitialData(); 
+            },
+
+            updateCloudStatusUI: function(active) {
+                const badge = document.getElementById('cloud-status-badge');
+                const configTextarea = document.getElementById('s-firebase-config');
+                if(!badge) return;
+
+                if (active) {
+                    badge.className = "mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Terhubung (Cloud Sync Aktif)`;
+                    
+                    if (configTextarea) {
+                        configTextarea.value = JSON.stringify(defaultFirebaseConfig, null, 2);
+                    }
                 } else {
-                    if(!isManualSync) this.renderAll();
-                    else {
-                        try { this.showToast('Mode lokal (Preview). Tidak terhubung ke server GAS.', 'info'); } catch(e){}
+                    badge.className = "mb-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-gray-400"></span> Mode Offline Lokal (Hubungi Admin)`;
+                }
+            },
+
+            // Setup real-time listener (onSnapshot) memantau perubahan antar device (RULE 1 & RULE 2)
+            setupFirebaseListeners: function() {
+                if (!isFirebaseActive || !db) return;
+
+                const collections = ['contents', 'clinics', 'team', 'ideas', 'settings', 'activities', 'users'];
+                collections.forEach(colName => {
+                    // Menggunakan Single Document Array Pattern agar mematuhi RULE 1 (Strict Path) & menghindari multi-query (RULE 2)
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', colName, 'main');
+                    
+                    onSnapshot(docRef, (docSnap) => {
+                        if (!auth.currentUser) return; // Guard operation (RULE 3)
+
+                        if (docSnap.exists()) {
+                            const incoming = docSnap.data().list;
+                            if (incoming) {
+                                this.data[colName] = incoming;
+                                localStorage.setItem('kartini_planner_' + colName, JSON.stringify(incoming));
+                                
+                                // Segarkan antarmuka visual yang terpengaruh
+                                if (colName === 'settings') this.applySettings();
+                                if (colName === 'team') { this.renderTeam(); this.populateFormSelects(); }
+                                if (colName === 'clinics') { this.renderClinics(); this.populateFormSelects(); this.renderSidebarFilters(); }
+                                if (colName === 'ideas') this.renderIdeas();
+                                if (colName === 'users') this.renderUsers();
+                                
+                                this.refreshData();
+                            }
+                        } else {
+                            // Mencegah layar kosong saat database awan baru dihubungkan (Auto-seeding data lokal saat ini)
+                            this.saveData(colName, this.data[colName]);
+                        }
+                    }, (error) => {
+                        console.error(`Gagal melakukan singkronisasi real-time ${colName}:`, error);
+                    });
+                });
+            },
+
+            fetchData: function(isManualSync = false) {
+                if (isManualSync) {
+                    this.showToast('Menyinkronkan data terbaru...', 'info');
+                    if (isFirebaseActive) {
+                        this.initFirebaseCloud();
+                    } else {
+                        this.loadLocalData();
+                        this.renderAll();
+                        this.showToast('Sinkronisasi Lokal Selesai.', 'success');
                     }
                 }
             },
 
-            saveToGAS: function(collection, dataToSave) {
-                 if (typeof google !== 'undefined' && google.script && google.script.run) {
-                     google.script.run
-                        .withFailureHandler((err) => {
-                            console.error('GAS Save Error:', err);
-                            try { this.showToast('Gagal sinkronisasi ' + collection + ' ke server', 'error'); } catch(e){}
-                        })
-                        .saveData(collection, dataToSave); 
+            // Proses penyimpanan yang mendukung offline-first dan real-time cloud push (RULE 1 & RULE 3)
+            saveData: async function(collectionName, dataToSave) {
+                 // Selalu backup di penyimpanan lokal browser
+                 localStorage.setItem('kartini_planner_' + collectionName, JSON.stringify(dataToSave));
+
+                 // Jika cloud active, simpan secara asinkron ke server awan
+                 if (isFirebaseActive && db && auth.currentUser) {
+                     try {
+                         const docRef = doc(db, 'artifacts', appId, 'public', 'data', collectionName, 'main');
+                         await setDoc(docRef, { list: dataToSave });
+                     } catch(error) {
+                         console.error(`Gagal mengunggah data ${collectionName} ke Cloud:`, error);
+                     }
                  }
             },
 
@@ -946,7 +1088,7 @@
                 this.data.activities.unshift({ time: new Date().toISOString(), message: msg, user: user, icon: icon });
                 if(this.data.activities.length > 50) this.data.activities.pop();
                 
-                this.saveToGAS('activities', this.data.activities);
+                this.saveData('activities', this.data.activities);
                 this.renderActivities();
             },
 
@@ -1063,6 +1205,22 @@
                         document.querySelectorAll('#platform-chips input').forEach(cb => cb.checked = false);
                         document.querySelectorAll('#c-clinics-container input').forEach(cb => cb.checked = false);
                     }
+                }, 300);
+            },
+
+            openMobileAdminMenu: function() {
+                document.getElementById('mobile-admin-menu').classList.remove('hidden');
+                document.getElementById('mobile-admin-menu').classList.add('flex');
+                setTimeout(() => {
+                    document.getElementById('mobile-admin-menu').classList.remove('translate-y-full');
+                }, 10);
+            },
+
+            closeMobileAdminMenu: function() {
+                document.getElementById('mobile-admin-menu').classList.add('translate-y-full');
+                setTimeout(() => {
+                    document.getElementById('mobile-admin-menu').classList.add('hidden');
+                    document.getElementById('mobile-admin-menu').classList.remove('flex');
                 }, 300);
             },
 
@@ -1206,7 +1364,6 @@
                     const filterAllEl = document.querySelector('#sidebar-clinics .filter-cb[value="all"]');
                     const isAll = filterAllEl ? filterAllEl.checked : true;
 
-                    // Pengaman jika data contents dari server korup/berubah format
                     if (!Array.isArray(this.data.contents)) return [];
 
                     return this.data.contents.filter(c => {
@@ -1271,7 +1428,7 @@
                 if(item.type === 'carousel' && item.slides) typeText += ` (${item.slides} Slide)`;
                 document.getElementById('d-type').innerText = typeText.charAt(0).toUpperCase() + typeText.slice(1);
 
-                document.getElementById('d-status').className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold ${statusInfo.color} border ${statusInfo.border}`;
+                document.getElementById('d-status').className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs md:text-sm font-medium ${statusInfo.color} border ${statusInfo.border}`;
                 document.getElementById('d-status').innerText = statusInfo.label;
                 
                 document.getElementById('d-created-by').innerHTML = `<i class="fas fa-user-edit text-gray-400 mr-1"></i> ${creator ? creator.name : 'Sistem'}`;
@@ -1279,6 +1436,16 @@
                 document.getElementById('d-brief').innerText = item.brief || '-';
                 document.getElementById('d-caption').innerText = item.caption || '-';
                 
+                if(item.driveLink) {
+                    const linkEl = document.getElementById('d-link');
+                    linkEl.href = item.driveLink;
+                    linkEl.classList.remove('hidden');
+                    document.getElementById('d-no-link').classList.add('hidden');
+                } else {
+                    document.getElementById('d-link').classList.add('hidden');
+                    document.getElementById('d-no-link').classList.remove('hidden');
+                }
+
                 if(pic) {
                     document.getElementById('d-pic-name').innerText = pic.name;
                     document.getElementById('d-pic-avatar').src = `https://ui-avatars.com/api/?name=${pic.name}&background=random&color=fff`;
@@ -1318,6 +1485,8 @@
                         
                         document.getElementById('c-brief').value = item.brief || '';
                         document.getElementById('c-caption').value = item.caption || '';
+                        document.getElementById('c-drive').value = item.driveLink || '';
+                        document.getElementById('c-hashtags').value = item.hashtags || '';
                         
                         (item.clinicIds || []).forEach(cId => {
                             let cb = document.querySelector(`.clinic-checkbox[value="${cId}"]`);
@@ -1373,6 +1542,7 @@
                     title: title, pillar: pillar, type: type,
                     slides: type === 'carousel' ? document.getElementById('c-slides').value : null,
                     brief: document.getElementById('c-brief').value, caption: document.getElementById('c-caption').value,
+                    driveLink: document.getElementById('c-drive').value, hashtags: document.getElementById('c-hashtags').value,
                     clinicIds: clinicIds, 
                     date: date, time: document.getElementById('c-time').value,
                     status: document.getElementById('c-status').value,
@@ -1385,17 +1555,17 @@
                     const idx = this.data.contents.findIndex(c => c.id === this.currentEditId);
                     data.createdBy = this.data.contents[idx].createdBy; 
                     if(idx > -1) this.data.contents[idx] = { ...this.data.contents[idx], ...data };
-                    this.showToast('Konten diupdate, mensinkronkan...', 'info');
+                    this.showToast('Konten diperbarui.', 'info');
                     this.logActivity(`Update konten: ${title}`, this.currentUser.name, 'fas fa-pen text-blue-500');
                 } else {
                     data.id = 'c_' + Date.now();
                     this.data.contents.push(data);
-                    this.showToast('Menyimpan konten baru ke server...', 'info');
+                    this.showToast('Konten berhasil disimpan.', 'info');
                     this.logActivity(`Buat konten baru: ${title}`, this.currentUser.name, 'fas fa-plus text-primary-500');
                 }
                 
                 this.closeModal('content-modal');
-                this.saveToGAS('contents', this.data.contents); // Sync
+                this.saveData('contents', this.data.contents); // Sync
                 this.refreshData();
             },
 
@@ -1409,7 +1579,7 @@
                         this.logActivity(`Hapus konten: ${content ? content.title : id}`, this.currentUser.name, 'fas fa-trash text-red-500');
                         this.data.contents = this.data.contents.filter(c => c.id !== id);
                         this.closeModal('content-modal');
-                        this.saveToGAS('contents', this.data.contents); // Sync
+                        this.saveData('contents', this.data.contents); // Sync
                         this.refreshData();
                         this.showToast('Konten dihapus.', 'success');
                     }
@@ -1570,7 +1740,7 @@
                 this.data.users.push({ id: 'u_' + Date.now(), name, role, username, password });
                 document.getElementById('user-form').reset();
                 this.renderUsers();
-                this.saveToGAS('users', this.data.users); // Sync
+                this.saveData('users', this.data.users); // Sync
                 this.showToast('User berhasil ditambahkan', 'success');
                 this.logActivity(`Menambah Admin User: ${name}`, this.currentUser.name);
             },
@@ -1581,7 +1751,7 @@
                 
                 this.data.users = this.data.users.filter(u => u.id !== id);
                 this.renderUsers();
-                this.saveToGAS('users', this.data.users); // Sync
+                this.saveData('users', this.data.users); // Sync
                 this.showToast('User dihapus', 'info');
             },
 
@@ -1601,7 +1771,7 @@
                 this.data.settings.siteName = document.getElementById('s-name').value;
                 this.data.settings.logoUrl = document.getElementById('s-logo').value;
                 this.applySettings(); 
-                this.saveToGAS('settings', this.data.settings); // Sync
+                this.saveData('settings', this.data.settings); // Sync
                 this.showToast('Pengaturan disimpan', 'success');
             },
 
@@ -1626,13 +1796,13 @@
                 this.data.team.push({ id: 't_' + Date.now(), name, role });
                 document.getElementById('team-form').reset(); 
                 this.renderTeam(); this.populateFormSelects(); 
-                this.saveToGAS('team', this.data.team); // Sync
+                this.saveData('team', this.data.team); // Sync
                 this.showToast('Anggota ditambah', 'success');
             },
             deleteTeam: function(id) { 
                 this.data.team = this.data.team.filter(t => t.id !== id); 
                 this.renderTeam(); this.populateFormSelects(); 
-                this.saveToGAS('team', this.data.team); // Sync
+                this.saveData('team', this.data.team); // Sync
             },
 
             renderClinics: function() {
@@ -1654,13 +1824,13 @@
                 this.data.clinics.push({ id: 'cl_' + Date.now(), name, color, bg: 'bg-gray-100', text: 'text-gray-800' });
                 document.getElementById('clinic-form').reset(); 
                 this.renderClinics(); this.populateFormSelects(); this.renderSidebarFilters(); 
-                this.saveToGAS('clinics', this.data.clinics); // Sync
+                this.saveData('clinics', this.data.clinics); // Sync
                 this.showToast('Klinik ditambah', 'success');
             },
             deleteClinic: function(id) {
                 this.data.clinics = this.data.clinics.filter(c => c.id !== id); 
                 this.renderClinics(); this.populateFormSelects(); this.renderSidebarFilters();
-                this.saveToGAS('clinics', this.data.clinics); // Sync
+                this.saveData('clinics', this.data.clinics); // Sync
             },
 
             renderIdeas: function() {
@@ -1684,13 +1854,13 @@
                 this.data.ideas.unshift({ id: 'i_' + Date.now(), title, pillar, brief, date: new Date().toISOString() });
                 document.getElementById('idea-form').reset(); 
                 this.renderIdeas(); 
-                this.saveToGAS('ideas', this.data.ideas); // Sync
+                this.saveData('ideas', this.data.ideas); // Sync
                 this.showToast('Ide disimpan', 'success');
             },
             deleteIdea: function(id) { 
                 this.data.ideas = this.data.ideas.filter(i => i.id !== id); 
                 this.renderIdeas(); 
-                this.saveToGAS('ideas', this.data.ideas); // Sync
+                this.saveData('ideas', this.data.ideas); // Sync
             },
             promoteIdea: function(id) {
                 const idea = this.data.ideas.find(i => i.id === id); if(!idea) return;
@@ -1754,55 +1924,6 @@
                 });
             },
 
-            generateBriefWithAI: async function() {
-                const title = document.getElementById('c-title').value;
-                const pillar = document.getElementById('c-pillar').value;
-                const type = document.getElementById('c-type').value;
-                if (!title) { this.showToast('Masukkan Judul Konten terlebih dahulu.', 'warning'); return; }
-
-                Swal.fire({ title: 'AI Sedang Berpikir...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                const systemPrompt = "Anda Creative Director. Buat brief desain. LANGSUNG TULISKAN isinya TANPA basa-basi. Format: \nSlide 1: [Isi]";
-                const userQuery = `Topik: ${title}\nPilar: ${pillar || 'Edukasi'}\nJenis: ${type}`;
-
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=AQ.Ab8RN6Jo_iveg2YDnWI3ue1CJ0Bsd9JsgRBzTDic4UDo5YHWtQ`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } })
-                    });
-                    const result = await response.json();
-                    if (result.candidates) {
-                        const briefEl = document.getElementById('c-brief');
-                        briefEl.value = result.candidates[0].content.parts[0].text;
-                        briefEl.style.height = briefEl.scrollHeight + 'px';
-                        Swal.close(); this.showToast('Brief di-generate AI!', 'success');
-                    } else throw new Error();
-                } catch (error) { Swal.fire('Error', 'Gagal menghubungi Gemini AI.', 'error'); }
-            },
-
-            generateCaptionWithAI: async function() {
-                const title = document.getElementById('c-title').value;
-                const brief = document.getElementById('c-brief').value;
-                if (!title) { this.showToast('Masukkan Judul terlebih dahulu.', 'warning'); return; }
-
-                Swal.fire({ title: 'Merangkai Caption...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                const systemPrompt = "Anda Copywriter RS. Buat caption sosmed yang luwes, humanis. Sertakan CTA dan 5 hashtag relevan di akhir. Langsung berikan captionnya.";
-                const userQuery = `Topik: ${title}\nBrief: ${brief || 'Edukasi umum'}`;
-
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=AQ.Ab8RN6Jo_iveg2YDnWI3ue1CJ0Bsd9JsgRBzTDic4UDo5YHWtQ`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } })
-                    });
-                    const result = await response.json();
-                    if (result.candidates) {
-                        const capEl = document.getElementById('c-caption');
-                        capEl.value = result.candidates[0].content.parts[0].text;
-                        capEl.style.height = capEl.scrollHeight + 'px';
-                        Swal.close(); this.showToast('Caption di-generate AI!', 'success');
-                    } else throw new Error();
-                } catch (error) { Swal.fire('Error', 'Gagal menghubungi Gemini AI.', 'error'); }
-            },
-
             showToast: function(message, type = 'success') {
                 Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true, background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff', color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b' }).fire({ icon: type, title: message });
             },
@@ -1826,7 +1947,6 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => { app.init(); });
-
     </script>
 </body>
 </html>
