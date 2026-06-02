@@ -561,30 +561,24 @@
                             </div>
                             <div>
                                 <div class="flex justify-between items-end mb-1">
-                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Brief / Arahan Desain <span class="text-red-500">*</span></label>
-                                    <div class="flex gap-2">
-                                        <button type="button" onclick="document.getElementById('c-brief').value=''; document.getElementById('c-brief').style.height='80px'" class="text-xs text-gray-500 hover:text-red-500 transition-colors bg-gray-100 px-2 py-1 rounded-md border border-gray-200" title="Reset Brief">
-                                            <i class="fas fa-undo"></i> Reset
-                                        </button>
-                                        <button type="button" onclick="app.generateBriefWithAI()" class="text-xs text-blue-600 font-bold flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md border border-blue-200">
-                                            <i class="fas fa-magic"></i> AI Assist
-                                        </button>
-                                    </div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Brief / Arahan Desain <span class="text-red-500">*</span></label>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="document.getElementById('c-brief').value=''; document.getElementById('c-brief').style.height='80px'" class="text-xs text-gray-500 hover:text-red-500 transition-colors bg-gray-100 px-2 py-1 rounded-md border border-gray-200" title="Reset Brief">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
                                 </div>
+                            </div>
                                 <textarea id="c-brief" rows="3" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" required placeholder="Jelaskan isi desain (misal: Slide 1 - Judul, Slide 2 - Penjelasan...)" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 resize-none text-sm min-h-[80px]"></textarea>
                             </div>
                             <div>
                                 <div class="flex justify-between items-end mb-1">
-                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Caption Sosmed</label>
-                                    <div class="flex gap-2">
-                                        <button type="button" onclick="document.getElementById('c-caption').value=''; document.getElementById('c-caption').style.height='100px'" class="text-xs text-gray-500 hover:text-red-500 transition-colors bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
-                                            <i class="fas fa-undo"></i> Reset
-                                        </button>
-                                        <button type="button" onclick="app.generateCaptionWithAI()" class="text-xs text-purple-600 font-bold flex items-center gap-1 bg-purple-50 px-2 py-1 rounded-md border border-purple-200">
-                                            <i class="fas fa-sparkles"></i> AI Assist
-                                        </button>
-                                    </div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Caption Sosmed</label>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="document.getElementById('c-caption').value=''; document.getElementById('c-caption').style.height='100px'" class="text-xs text-gray-500 hover:text-red-500 transition-colors bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
                                 </div>
+                            </div>
                                 <textarea id="c-caption" rows="4" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" placeholder="Tulis caption sosmed disini..." class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-dark-border outline-none focus:ring-2 focus:ring-primary-500 resize-none text-sm min-h-[100px]"></textarea>
                             </div>
                         </div>
